@@ -8,5 +8,6 @@ import info.ashutosh.domain.entity.location.State;
 
 public interface StateRepository extends JpaRepository<State, Long> {
 
-	List<State> findByLanguage_Id(Long languageId);
+	List<State> findByLanguage_IdAndCountry_Id(Long languageId, Long trimCountryId);
+
 }
