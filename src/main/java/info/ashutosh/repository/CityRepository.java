@@ -8,6 +8,6 @@ import info.ashutosh.domain.entity.location.City;
 
 public interface CityRepository extends JpaRepository<City, Long> {
 
-	List<City> findByLanguage_IdAndCountry_Id(Long trimLaguageId, Long trimCityId);
+	List<City> findByLanguage_IdAndState_Id(Long LaguageId, Long CityId);
 
 }

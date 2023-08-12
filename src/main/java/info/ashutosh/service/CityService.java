@@ -27,7 +27,7 @@ public class CityService {
 			return ResponseUtil.prepareResponse(ResponseStatus.NOT_EXIST, null, "No Record Found !");
 		}
 
-		List<City> findBylaguageId = cityRepository.findByLanguage_IdAndCountry_Id(trimLaguageId, trimCityId);
+		List<City> findBylaguageId = cityRepository.findByLanguage_IdAndState_Id(trimLaguageId, trimCityId);
 
 		if (findBylaguageId.isEmpty()) {
 

@@ -19,8 +19,8 @@ public class CityController {
 	@GetMapping(value = "/get")
 	public CustomResponse getcitiesBasedOnLaguageIdAndcountryId(
 			@RequestParam("languageId") String languageId,
-			@RequestParam("countryId") String countryId) {
-		return cityService.getcitiesBasedOnLaguageIdAndcountryId(languageId, countryId);
+			@RequestParam("cityId") String cityId) {
+		return cityService.getcitiesBasedOnLaguageIdAndcountryId(languageId, cityId);
 	}
 
 }
