@@ -3,6 +3,7 @@ package info.ashutosh.domain.entity.location;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import info.ashutosh.domain.entity.person.Language;
 import info.ashutosh.domain.entity.person.Person;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @Table(name = "cities")
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class City {
 
 	@Id
