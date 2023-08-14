@@ -28,8 +28,8 @@ public class DataInitializationConfig {
 	 *         database.
 	 */
 	@Bean
-	@ConditionalOnProperty(name = "custom.data.init.enabled", havingValue = "true")
-	public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
+	@ConditionalOnProperty(name = "custom.database.init.for", havingValue = "both")
+	public DataSourceInitializer dataSourceInitializerBothSchemaAndData(DataSource dataSource) {
 
 		LOGGER.info("DataSourceInitializer : Executing Schema Populator..");
 
@@ -49,4 +49,27 @@ public class DataInitializationConfig {
 		LOGGER.info("DataSourceInitializer : Schemas and Data are Imported");
 		return initializer;
 	}
+	
+	 /**
+     * Configures a DataSourceInitializer to populate the database with initial data from the "data.sql" script.
+     * This method is conditionally enabled based on the value of the "custom.data.init.enabled" property.
+     *
+     * @param dataSource The DataSource to be initialized with data.
+     * @return DataSourceInitializer instance responsible for populating the database.
+     */
+    @Bean
+    @ConditionalOnProperty(name = "custom.database.init.for", havingValue = "data")
+    public DataSourceInitializer dataSourceInitializerOnlyData(DataSource dataSource) {
+        DataSourceInitializer initializer = new DataSourceInitializer();
+        initializer.setDataSource(dataSource);
+
+        // Create a ResourceDatabasePopulator to load data from "schemas/data.sql"
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(new ClassPathResource("schemas/data.sql"));
+
+        // Set the populator to the initializer
+        initializer.setDatabasePopulator(populator);
+
+        return initializer;
+    }
 }
