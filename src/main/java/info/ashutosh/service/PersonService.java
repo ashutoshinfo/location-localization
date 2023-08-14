@@ -94,7 +94,7 @@ public class PersonService {
 			return ResponseUtil.prepareResponse(ResponseStatus.NOT_EXIST, null, null);
 		}
 
-		return ResponseUtil.prepareResponse(ResponseStatus.NOT_EXIST, allPerson, null);
+		return ResponseUtil.prepareResponse(ResponseStatus.SUCCESS, allPerson, null);
 	}
 
 }
