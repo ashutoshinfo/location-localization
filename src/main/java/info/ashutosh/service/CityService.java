@@ -18,16 +18,16 @@ public class CityService {
 	@Autowired
 	CityRepository cityRepository;
 
-	public CustomResponse getcitiesBasedOnLaguageIdAndcountryId(String laguageId, String cityId) {
+	public CustomResponse getcitiesBasedOnLaguageIdAndcountryId(String laguageId, String stateId) {
 
 		Long trimLaguageId = CommonMethod.stringToLong(laguageId);
-		Long trimCityId = CommonMethod.stringToLong(cityId);
+		Long trimStateId = CommonMethod.stringToLong(stateId);
 
-		if (trimLaguageId == null && trimCityId == null) {
+		if (trimLaguageId == null && trimStateId == null) {
 			return ResponseUtil.prepareResponse(ResponseStatus.NOT_EXIST, null, "No Record Found !");
 		}
 
-		List<City> findBylaguageId = cityRepository.findByLanguage_IdAndState_Id(trimLaguageId, trimCityId);
+		List<City> findBylaguageId = cityRepository.findByLanguage_IdAndState_Id(trimLaguageId, trimStateId);
 
 		if (findBylaguageId.isEmpty()) {
 
