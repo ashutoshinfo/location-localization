@@ -28,4 +28,4 @@
 
 -- Insert data into 'person' table
 	INSERT INTO person (id, name, fk_language_fid, fk_city_fid, fk_country_fid, fk_state_fid) VALUES (1, 'Ashutosh', 1, 1, 1, 1);
-	INSERT INTO person (id, name, fk_language_fid, fk_city_fid, fk_country_fid, fk_state_fid) VALUES (2, 'Patel', 1, 1, 1, 1);
+	INSERT INTO person (id, name, fk_language_fid, fk_city_fid, fk_country_fid, fk_state_fid) VALUES (2, 'Patel', 2, 2, 2, 2);
