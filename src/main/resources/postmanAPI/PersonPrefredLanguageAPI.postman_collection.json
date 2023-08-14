@@ -62,7 +62,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/city/get?languageId=2&cityId=2",
+					"raw": "http://localhost:8080/city/get?languageId=2&stateId=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -78,7 +78,7 @@
 							"value": "2"
 						},
 						{
-							"key": "cityId",
+							"key": "stateId",
 							"value": "2"
 						}
 					]
