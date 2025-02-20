@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Dropdowns</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Select Language, Country, State, and City</h1>
+
+        <!-- Language Dropdown -->
+        <label for="language">Language:</label>
+        <select id="language">
+            <option value="">Select Language</option>
+        </select>
+
+        <!-- Country Dropdown -->
+        <label for="country">Country:</label>
+        <select id="country" disabled>
+            <option value="">Select Country</option>
+        </select>
+
+        <!-- State Dropdown -->
+        <label for="state">State:</label>
+        <select id="state" disabled>
+            <option value="">Select State</option>
+        </select>
+
+        <!-- City Dropdown -->
+        <label for="city">City:</label>
+        <select id="city" disabled>
+            <option value="">Select City</option>
+        </select>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+select:disabled {
+    background-color: #f2f2f2;
+    cursor: not-allowed;
+}
+
+option {
+    padding: 10px;
+}
+
+</style>
+
+<script>
+// Fetch languages on page load
+window.onload = function () {
+    fetchLanguages();
+    
+    // Event listeners for when values change
+    document.getElementById('language').addEventListener('change', function() {
+        if (this.value) {
+            fetchCountries(); // Fetch countries for the selected language
+            document.getElementById('country').disabled = false; // Enable country dropdown
+			resetCountryStateCityDropdowns(); // Reset and disable country, state, city if no language is selected
+			document.getElementById('state').disabled = true;
+            document.getElementById('city').disabled = true;
+        } else {
+            resetCountryStateCityDropdowns(); // Reset and disable country, state, city if no language is selected
+            document.getElementById('country').disabled = true;
+            document.getElementById('state').disabled = true;
+            document.getElementById('city').disabled = true;
+        }
+    });
+
+    document.getElementById('country').addEventListener('change', function() {
+        if (this.value) {
+            fetchStates(this.value); // Fetch states for the selected country
+            document.getElementById('state').disabled = false; // Enable state dropdown
+			resetCityDropdown(); // Reset and disable city if no state is selected
+            document.getElementById('city').disabled = true;
+        } else {
+            resetStateAndCityDropdowns(); // Reset and disable state and city if no country is selected
+            document.getElementById('state').disabled = true;
+			resetCityDropdown(); // Reset and disable city if no state is selected
+            document.getElementById('city').disabled = true;
+        }
+    });
+
+    document.getElementById('state').addEventListener('change', function() {
+        if (this.value) {
+            fetchCities(this.value); // Fetch cities for the selected state
+            document.getElementById('city').disabled = false; // Enable city dropdown
+
+        } else {
+            resetCityDropdown(); // Reset and disable city if no state is selected
+            document.getElementById('city').disabled = true;
+        }
+    });
+};
+
+// Fetch languages
+function fetchLanguages() {
+    fetch('http://localhost:8080/language/get')
+        .then(response => response.json())
+        .then(data => {
+            const languageDropdown = document.getElementById('language');
+            languageDropdown.innerHTML = '<option value="">Select Language</option>'; // Reset the dropdown
+
+            data.payload.forEach(language => {
+                const option = document.createElement('option');
+                option.value = language.id;
+                option.textContent = language.name;
+                languageDropdown.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.log('Error fetching languages:', error);
+            document.getElementById('language').innerHTML = '<option value="">Failed to load languages</option>';
+        });
+}
+
+// Fetch countries based on the selected language
+function fetchCountries() {
+    const languageId = document.getElementById('language').value;
+    if (!languageId) {
+        resetCountryStateCityDropdowns();
+        return;
+    }
+
+    fetch(`http://localhost:8080/country/get/${languageId}`)
+        .then(response => response.json())
+        .then(data => {
+            const countryDropdown = document.getElementById('country');
+            countryDropdown.innerHTML = '<option value="">Select Country</option>';
+
+            data.payload.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country.id;
+                option.textContent = country.name;
+                countryDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.log('Error fetching countries:', error));
+}
+
+// Fetch states based on the selected country
+function fetchStates(countryId) {
+    if (!countryId) {
+        resetStateAndCityDropdowns();
+        return;
+    }
+
+    const languageId = document.getElementById('language').value;
+
+    fetch(`http://localhost:8080/state/get?languageId=${languageId}&countryId=${countryId}`)
+        .then(response => response.json())
+        .then(data => {
+            const stateDropdown = document.getElementById('state');
+            stateDropdown.innerHTML = '<option value="">Select State</option>';
+
+            data.payload.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.id;
+                option.textContent = state.name;
+                stateDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.log('Error fetching states:', error));
+}
+
+// Fetch cities based on the selected state
+function fetchCities(stateId) {
+    if (!stateId) {
+        resetCityDropdown();
+        return;
+    }
+
+    const languageId = document.getElementById('language').value;
+
+    fetch(`http://localhost:8080/city/get?languageId=${languageId}&stateId=${stateId}`)
+        .then(response => response.json())
+        .then(data => {
+            const cityDropdown = document.getElementById('city');
+            cityDropdown.innerHTML = '<option value="">Select City</option>';
+
+            data.payload.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.id;
+                option.textContent = city.name;
+                cityDropdown.appendChild(option);
+            });
+        })
+        .catch(error => console.log('Error fetching cities:', error));
+}
+
+// Reset country, state, and city dropdowns
+function resetCountryStateCityDropdowns() {
+    const countryDropdown = document.getElementById('country');
+    const stateDropdown = document.getElementById('state');
+    const cityDropdown = document.getElementById('city');
+
+    countryDropdown.innerHTML = '<option value="">Select Country</option>';
+    stateDropdown.innerHTML = '<option value="">Select State</option>';
+    cityDropdown.innerHTML = '<option value="">Select City</option>';
+}
+
+// Reset state and city dropdowns if no country is selected
+function resetStateAndCityDropdowns() {
+    const stateDropdown = document.getElementById('state');
+    const cityDropdown = document.getElementById('city');
+
+    stateDropdown.innerHTML = '<option value="">Select State</option>';
+    cityDropdown.innerHTML = '<option value="">Select City</option>';
+}
+
+// Reset city dropdown if no state is selected
+function resetCityDropdown() {
+    const cityDropdown = document.getElementById('city');
+    cityDropdown.innerHTML = '<option value="">Select City</option>';
+}
+
+</script>
