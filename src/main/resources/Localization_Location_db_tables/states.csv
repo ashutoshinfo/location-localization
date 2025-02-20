@@ -3,5 +3,5 @@ id,name,fk_country_id,fk_language_id
 2,गुजरात,2,2
 3,Florida,3,1
 4,फ्लोरिडा,4,2
-5,Ahmedabad,1,1
-6,अहमदाबाद,2,2
+5,Maharashtra,1,1
+6,महाराष्ट्र,2,2
